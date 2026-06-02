@@ -6,6 +6,7 @@ import Login from "./components/Login";
 import AddTransaction from "./components/AddTransaction";
 import TransactionList from "./components/TransactionList";
 import Summary from "./components/Summary";
+import ExpenseChart from "./components/ExpenseChart";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -44,6 +45,7 @@ function App() {
           </button>
           <Summary />
           <AddTransaction />
+          <ExpenseChart />
           <TransactionList />
         </div>
         </div>
