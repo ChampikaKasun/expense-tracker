@@ -10,6 +10,8 @@ function TransactionList() {
   const [editingId, setEditingId] = useState(null);
   const [editAmount, setEditAmount] = useState("");
   const [editCategory, setEditCategory] = useState("");
+  const [filterType, setFilterType] = useState("all");
+  const [filterCategory, setFilterCategory] = useState("");
 
   useEffect(() => {
     const q = query(
@@ -61,14 +63,46 @@ function TransactionList() {
     }
   };
 
+  const categories = [...new Set(transactions.map((t) => t.category))];
+
+  const filteredTransactions = transactions.filter((t) => {
+    const matchesType = filterType === "all" || t.type === filterType;
+    const matchesCategory = filterCategory === "" || t.category === filterCategory;
+    return matchesType && matchesCategory;
+  });
+
   return (
     <div style={{ maxWidth: "320px", margin: "20px auto" }}>
       <h3>Transactions</h3>
-      {transactions.length === 0 ? (
+      <div style={{ display: "flex", gap: "8px", marginBottom: "10px" }}>
+        <select
+          value={filterType}
+          onChange={(e) => setFilterType(e.target.value)}
+          style={{ flex: 1, padding: "6px" }}
+        >
+          <option value="all">All Types</option>
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
+        </select>
+        <select
+          value={filterCategory}
+          onChange={(e) => setFilterCategory(e.target.value)}
+          style={{ flex: 1, padding: "6px" }}
+        >
+          <option value="">All Categories</option>
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+      </div>
+      
+      {filteredTransactions.length === 0 ? (
         <p>No transactions yet.</p>
       ) : (
         <ul style={{ listStyle: "none", padding: 0 }}>
-          {transactions.map((t) => (
+          {filteredTransactions.map((t) => (
             <li
               key={t.id}
               style={{
