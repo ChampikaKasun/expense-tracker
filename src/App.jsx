@@ -3,6 +3,9 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "./firebase";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
+import AddTransaction from "./components/AddTransaction";
+import TransactionList from "./components/TransactionList";
+import Summary from "./components/Summary";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -33,7 +36,18 @@ function App() {
           <button onClick={handleLogout} style={{ padding: "8px 16px" }}>
             Log Out
           </button>
+          <div style={{ maxWidth: "320px", margin: "40px auto", textAlign: "center" }}>
+          <h2>Welcome!</h2>
+          <p>Logged in as: {user.email}</p>
+          <button onClick={handleLogout} style={{ padding: "8px 16px" }}>
+            Log Out
+          </button>
+          <Summary />
+          <AddTransaction />
+          <TransactionList />
         </div>
+        </div>
+        
       ) : (
         <div>
           <Signup />
