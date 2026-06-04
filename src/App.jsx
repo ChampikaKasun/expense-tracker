@@ -3,10 +3,10 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "./firebase";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
-import AddTransaction from "./components/AddTransaction";
-import TransactionList from "./components/TransactionList";
 import Summary from "./components/Summary";
+import AddTransaction from "./components/AddTransaction";
 import ExpenseChart from "./components/ExpenseChart";
+import TransactionList from "./components/TransactionList";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -29,32 +29,31 @@ function App() {
   }
 
   return (
-    <div>
+    <div className="app-container">
       {user ? (
-        <div style={{ maxWidth: "320px", margin: "40px auto", textAlign: "center" }}>
-          <h2>Welcome!</h2>
-          <p>Logged in as: {user.email}</p>
-          <button onClick={handleLogout} style={{ padding: "8px 16px" }}>
-            Log Out
-          </button>
-          <div style={{ maxWidth: "320px", margin: "40px auto", textAlign: "center" }}>
-          <h2>Welcome!</h2>
-          <p>Logged in as: {user.email}</p>
-          <button onClick={handleLogout} style={{ padding: "8px 16px" }}>
-            Log Out
-          </button>
+        <>
+          <div className="app-header">
+            <h1>💰 Expense Tracker</h1>
+            <button onClick={handleLogout} className="btn-logout">
+              Log Out
+            </button>
+          </div>
+          <p style={{ fontSize: "13px", color: "#667", marginBottom: "16px" }}>
+            {user.email}
+          </p>
           <Summary />
           <AddTransaction />
           <ExpenseChart />
           <TransactionList />
-        </div>
-        </div>
-        
+        </>
       ) : (
-        <div>
+        <>
+          <h1 style={{ textAlign: "center", color: "#1565c0", marginBottom: "20px" }}>
+            💰 Expense Tracker
+          </h1>
           <Signup />
           <Login />
-        </div>
+        </>
       )}
     </div>
   );
