@@ -34,27 +34,26 @@ function Summary() {
 
   const balance = income - expenses;
 
-  const cardStyle = {
-    flex: 1,
-    padding: "16px",
-    borderRadius: "8px",
-    textAlign: "center",
-    color: "#fff",
-  };
-
   return (
-    <div style={{ maxWidth: "320px", margin: "20px auto", display: "flex", gap: "10px" }}>
-      <div style={{ ...cardStyle, background: "#2e7d32" }}>
-        <div style={{ fontSize: "12px" }}>Income</div>
-        <div style={{ fontSize: "18px", fontWeight: "bold" }}>{income.toFixed(2)}</div>
+    <div className="summary-row">
+      <div className="summary-card" style={{ background: "linear-gradient(135deg, #2e7d32, #43a047)" }}>
+        <div className="label">Income</div>
+        <div className="value">{income.toFixed(2)}</div>
       </div>
-      <div style={{ ...cardStyle, background: "#c62828" }}>
-        <div style={{ fontSize: "12px" }}>Expenses</div>
-        <div style={{ fontSize: "18px", fontWeight: "bold" }}>{expenses.toFixed(2)}</div>
+      <div className="summary-card" style={{ background: "linear-gradient(135deg, #c62828, #e53935)" }}>
+        <div className="label">Expenses</div>
+        <div className="value">{expenses.toFixed(2)}</div>
       </div>
-      <div style={{ ...cardStyle, background: balance >= 0 ? "#1565c0" : "#6a1b9a" }}>
-        <div style={{ fontSize: "12px" }}>Balance</div>
-        <div style={{ fontSize: "18px", fontWeight: "bold" }}>{balance.toFixed(2)}</div>
+      <div
+        className="summary-card"
+        style={{
+          background: balance >= 0
+            ? "linear-gradient(135deg, #1565c0, #1e88e5)"
+            : "linear-gradient(135deg, #6a1b9a, #8e24aa)",
+        }}
+      >
+        <div className="label">Balance</div>
+        <div className="value">{balance.toFixed(2)}</div>
       </div>
     </div>
   );
