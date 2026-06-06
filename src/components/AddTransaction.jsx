@@ -22,8 +22,6 @@ function AddTransaction() {
         userId: auth.currentUser.uid,
         createdAt: serverTimestamp(),
       });
-
-      // Clear the form
       setAmount("");
       setCategory("");
       setType("expense");
@@ -34,50 +32,46 @@ function AddTransaction() {
   };
 
   return (
-    <div style={{ maxWidth: "320px", margin: "20px auto" }}>
+    <div className="card">
       <h3>Add Transaction</h3>
       <form onSubmit={handleSubmit}>
         <select
+          className="field"
           value={type}
           onChange={(e) => setType(e.target.value)}
-          style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px" }}
         >
           <option value="expense">Expense</option>
           <option value="income">Income</option>
         </select>
-
         <input
           type="number"
+          className="field"
           placeholder="Amount"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           required
           step="0.01"
-          style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px" }}
         />
-
         <input
           type="text"
+          className="field"
           placeholder="Category (e.g. Food, Salary)"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           required
-          style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px" }}
         />
-
         <input
           type="date"
+          className="field"
           value={date}
           onChange={(e) => setDate(e.target.value)}
           required
-          style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px" }}
         />
-
-        <button type="submit" style={{ width: "100%", padding: "8px" }}>
+        <button type="submit" className="btn-primary">
           Add Transaction
         </button>
       </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="auth-error">{error}</p>}
     </div>
   );
 }
