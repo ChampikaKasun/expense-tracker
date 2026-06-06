@@ -6,9 +6,11 @@ import AddTransaction from "./components/AddTransaction";
 import ExpenseChart from "./components/ExpenseChart";
 import TransactionList from "./components/TransactionList";
 import AuthCard from "./components/AuthCard";
+import MonthSelector from "./components/MonthSelector";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState("all");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,10 +40,13 @@ function App() {
             </button>
           </div>
           <p className="user-email">{user.email}</p>
-          <Summary />
+
+          <MonthSelector selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
+
+          <Summary selectedMonth={selectedMonth} />
           <AddTransaction />
-          <ExpenseChart />
-          <TransactionList />
+          <ExpenseChart selectedMonth={selectedMonth} />
+          <TransactionList selectedMonth={selectedMonth} />
         </>
       ) : (
         <AuthCard />

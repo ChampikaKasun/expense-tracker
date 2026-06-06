@@ -4,8 +4,9 @@ import {
   deleteDoc, doc, updateDoc
 } from "firebase/firestore";
 import { db, auth } from "../firebase";
+import { matchesMonth } from "../utils/filterByMonth";
 
-function TransactionList() {
+function TransactionList({ selectedMonth }) {
   const [transactions, setTransactions] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editAmount, setEditAmount] = useState("");
@@ -19,15 +20,10 @@ function TransactionList() {
       where("userId", "==", auth.currentUser.uid),
       orderBy("createdAt", "desc")
     );
-
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const items = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const items = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setTransactions(items);
     });
-
     return () => unsubscribe();
   }, []);
 
@@ -68,109 +64,70 @@ function TransactionList() {
   const filteredTransactions = transactions.filter((t) => {
     const matchesType = filterType === "all" || t.type === filterType;
     const matchesCategory = filterCategory === "" || t.category === filterCategory;
-    return matchesType && matchesCategory;
+    const matchesMonthFilter = matchesMonth(t.date, selectedMonth);   
+    return matchesType && matchesCategory && matchesMonthFilter;      
   });
 
   return (
-    <div style={{ maxWidth: "320px", margin: "20px auto" }}>
+    <div className="card">
       <h3>Transactions</h3>
-      <div style={{ display: "flex", gap: "8px", marginBottom: "10px" }}>
-        <select
-          value={filterType}
-          onChange={(e) => setFilterType(e.target.value)}
-          style={{ flex: 1, padding: "6px" }}
-        >
+
+      <div className="filter-row">
+        <select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
           <option value="all">All Types</option>
           <option value="income">Income</option>
           <option value="expense">Expense</option>
         </select>
-        <select
-          value={filterCategory}
-          onChange={(e) => setFilterCategory(e.target.value)}
-          style={{ flex: 1, padding: "6px" }}
-        >
+        <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
           <option value="">All Categories</option>
           {categories.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
+            <option key={cat} value={cat}>{cat}</option>
           ))}
         </select>
       </div>
-      
+
       {filteredTransactions.length === 0 ? (
-        <p>No transactions yet.</p>
+        <p className="empty-state">No transactions to show.</p>
       ) : (
         <ul style={{ listStyle: "none", padding: 0 }}>
           {filteredTransactions.map((t) => (
-            <li
-              key={t.id}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "8px",
-                marginBottom: "6px",
-                border: "1px solid #ddd",
-                borderRadius: "4px",
-              }}
-            >
+            <li key={t.id} className="txn-item">
               {editingId === t.id ? (
                 <>
                   <span style={{ display: "flex", gap: "6px", flex: 1 }}>
                     <input
                       type="text"
+                      className="field"
+                      style={{ marginBottom: 0, padding: "8px" }}
                       value={editCategory}
                       onChange={(e) => setEditCategory(e.target.value)}
-                      style={{ width: "90px", padding: "4px" }}
                     />
                     <input
                       type="number"
+                      className="field"
+                      style={{ marginBottom: 0, padding: "8px", width: "80px" }}
                       value={editAmount}
                       onChange={(e) => setEditAmount(e.target.value)}
                       step="0.01"
-                      style={{ width: "70px", padding: "4px" }}
                     />
                   </span>
-                  <span style={{ display: "flex", gap: "6px" }}>
-                    <button onClick={() => saveEdit(t.id)} style={{ cursor: "pointer" }}>
-                      Save
-                    </button>
-                    <button onClick={cancelEdit} style={{ cursor: "pointer" }}>
-                      Cancel
-                    </button>
+                  <span style={{ display: "flex", gap: "4px", marginLeft: "8px" }}>
+                    <button className="icon-btn edit" onClick={() => saveEdit(t.id)} title="Save">✓</button>
+                    <button className="icon-btn delete" onClick={cancelEdit} title="Cancel">✕</button>
                   </span>
                 </>
               ) : (
                 <>
                   <span>
-                    {t.category} <small style={{ color: "#888" }}>({t.date})</small>
+                    <span className="txn-category">{t.category}</span>
+                    <span className="txn-date">{t.date}</span>
                   </span>
-                  <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <span style={{ color: t.type === "income" ? "green" : "red" }}>
-                      {t.type === "income" ? "+" : "-"}
-                      {t.amount.toFixed(2)}
+                  <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span className={t.type === "income" ? "txn-amount income" : "txn-amount expense"}>
+                      {t.type === "income" ? "+" : "-"}{t.amount.toFixed(2)}
                     </span>
-                    <button
-                      onClick={() => startEdit(t)}
-                      style={{
-                        border: "none", background: "transparent",
-                        color: "#1565c0", cursor: "pointer", fontSize: "14px",
-                      }}
-                      title="Edit"
-                    >
-                      ✎
-                    </button>
-                    <button
-                      onClick={() => handleDelete(t.id)}
-                      style={{
-                        border: "none", background: "transparent",
-                        color: "#c00", cursor: "pointer", fontSize: "16px",
-                      }}
-                      title="Delete"
-                    >
-                      ✕
-                    </button>
+                    <button className="icon-btn edit" onClick={() => startEdit(t)} title="Edit">✎</button>
+                    <button className="icon-btn delete" onClick={() => handleDelete(t.id)} title="Delete">✕</button>
                   </span>
                 </>
               )}
