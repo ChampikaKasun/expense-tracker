@@ -1,7 +1,5 @@
 # 💰 Expense Tracker
 
-🚧 **Work in progress**
-
 A full-stack personal finance tracker that lets users log income and expenses,
 categorise transactions, and visualise their spending with charts. Built to
 practise full-stack development with React and Firebase.
