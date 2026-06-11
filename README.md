@@ -13,5 +13,3 @@ practise full-stack development with React and Firebase.
 
 ## Tech Stack
 React · Vite · Firebase (Auth + Firestore) · Recharts
-
-## Getting Started
